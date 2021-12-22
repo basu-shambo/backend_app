@@ -1,33 +1,30 @@
-import * as cheerio  from "cheerio";
-import request from "request";
-
 import { extractLinks } from "./src/linkExtraction.js";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import linkModel from "./models/linkModel.js";
+import contentModel from "./models/contentModel.js";
+
+dotenv.config();
 
 
 const url = "https://indianexpress.com/"
-request(url,(error,response,html) => {
-    if(!error && response.statusCode === 200){
-        const $  = cheerio.load(html);
-        // const links = $('a');
-        // const content = $('p');
+const getAll = async (url ) =>{
+    const response = await extractLinks(url);
+    // console.log(response);
+}
 
-        // // $(links).each((index,link)=>{
-        // //     console.log($(link).attr('href'));
-        // //     console.log("\n");
-        // // })
-        // // console.log(content.text());
-        // $(content).each((index,paragraph)=>{
-        //     console.log($(paragraph).text());
-        //     console.log('\n');
-        // })
-        let links = extractLinks("a",$);
-        console.log(links);
-        
-        
-    }
-    
+
+const CONNECTION_URL = process.env.CONNECTION_URL
+
+mongoose.connect(CONNECTION_URL,{useNewUrlParser: true,useUnifiedTopology:true})
+.then(()=>{
+    console.log(mongoose.connection.readyState===1?'connected to mongodb':'not connected to mongodb ');
+    linkModel.deleteMany({},()=>console.log("Links Collection Emptied"));
+    contentModel.deleteMany({},()=>console.log("Links Collection Emptied"));
+    getAll(url);
+}).catch((err)=>{
+    console.log(err)
 })
 
-const extractContent = (html)=>{
 
-}
+

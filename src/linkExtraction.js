@@ -5,18 +5,20 @@ import * as cheerio from 'cheerio'
 
 export const extractLinks = (url) =>{
     return new Promise(resolve =>{
-        request(url,(error,response,html)=>{
+        request(url,async(error,response,html)=>{
             if(!error && response.statusCode === 200){
-                let i=0;
                 const $ = cheerio.load(html);
                 let links = []
-                $('a').each((index,link)=>{
+                await Promise.all($('a').map(async(index,link)=>{
                     let linkUrl = $(link).attr('href');
-                    if(urlRegexMatchindng(linkUrl)) links.push(linkUrl);
-                    const newUrl = new linkModel({link:linkUrl});
-                    newUrl.save(()=>i++);
-                })
-                console.log(i+" links saved")
+                    if(urlRegexMatchindng(linkUrl)){
+                        const newUrl = new linkModel({link:linkUrl});
+                        const responseURL = await newUrl.save();
+                        if(JSON.stringify(newUrl)===JSON.stringify(responseURL)){
+                            links.push(linkUrl);
+                        }
+                    }   
+                }))
                 resolve(links);
             }
             resolve([]);

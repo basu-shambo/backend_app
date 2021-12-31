@@ -11,7 +11,7 @@ export const extractLinks = (url) =>{
                 let links = []
                 await Promise.all($('a').map(async(index,link)=>{
                     let linkUrl = $(link).attr('href');
-                    if(urlRegexMatchindng(linkUrl)){
+                    if(urlRegexMatching(linkUrl)){
                         const newUrl = new linkModel({link:linkUrl});
                         const responseURL = await newUrl.save();
                         if(JSON.stringify(newUrl)===JSON.stringify(responseURL)){
@@ -26,7 +26,7 @@ export const extractLinks = (url) =>{
     })
 }
 
-const urlRegexMatchindng= (link) => {
+const urlRegexMatching= (link) => {
     var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
     var regex = new RegExp(expression);
     return regex.test(link);

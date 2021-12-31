@@ -1,5 +1,6 @@
 import { extractLinks } from "./src/linkExtraction.js";
 import { extractContent } from "./src/contentExtraction.js";
+import { extractImages } from "./src/ImageExtraction.js";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import linkModel from "./models/linkModel.js";
@@ -11,7 +12,8 @@ dotenv.config();
 const url = "https://indianexpress.com/"
 const getAll = async (url ) =>{
     const linkResponse = await extractLinks(url);
-    const contentResponse = await extractContent(url);
+    extractContent(url);
+    extractImages(url);
 }
 
 
